@@ -14,25 +14,19 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 
 public final class Main extends JavaPlugin implements Listener {
-
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        getServer().getPluginManager().registerEvents(this ,this);
+        getServer().getPluginManager().registerEvents(this, this);
     }
 
     @EventHandler
-    public void onFrame(EntityDamageByEntityEvent event){
+    public void onFrame(EntityDamageByEntityEvent event) {
         ItemFrame f = (ItemFrame) event.getEntity();
 
-        if(f.getItem().getType() != Material.AIR){
-
-            if (0 + (int) (Math.random() * ((100 - 0) + 1)) <= getConfig().getInt("probability", 100)) {
-                f.getWorld().dropItemNaturally(f.getLocation().add(0,1,0), f.getItem());
-                f.getVelocity().zero();
-                }
-            }
+        if(f.getItem().getType() != Material.AIR && 0 + (int) (Math.random() * ((100 - 0) + 1)) <= getConfig().getInt("probability", 100)) {
+            f.getWorld().dropItemNaturally(f.getLocation().add(0, 1, 0), f.getItem());
+            f.getVelocity().zero();
         }
     }
-
-//  if (0 + (int) (Math.random() * ((100 - 0) + 1)) <= getConfig().getInt("probability", 100)) {
+}
