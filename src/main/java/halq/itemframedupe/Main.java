@@ -1,33 +1,31 @@
-package halq.itemframedupe;
+import org.bukkit.Material;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.folia.api.FoliaPlayer;
-import com.github.folia.api.entity.FoliaItemFrame;
-import com.github.folia.api.event.entity.FoliaEntityDamageByEntityEvent;
-import com.github.folia.api.item.FoliaItemStack;
-import com.github.folia.api.plugin.FoliaPlugin;
-import com.github.folia.api.world.FoliaLocation;
+/**
+ * @zpython_
+ * @for 0b0t
+ * @since 8/02/24
+ */
 
-public class Main extends FoliaPlugin implements FoliaListener {
-
-    private int probability;
-
+public final class Main extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
-        this.probability = getConfig().getInt("probability", 100);
-        registerEvents(this);
+        saveDefaultConfig();
+        getServer().getPluginManager().registerEvents(this, this);
     }
 
-    @SubscribeEvent
-    public void onFrameDamage(FoliaEntityDamageByEntityEvent event) {
-        FoliaItemFrame frame = (FoliaItemFrame) event.getEntity();
+    @EventHandler
+    public void onFrame(EntityDamageByEntityEvent event) {
+        ItemFrame f = (ItemFrame) event.getEntity();
 
-        if (!frame.isEmpty() && Math.random() * 100 <= probability) {
-            FoliaItemStack item = frame.getItem();
-            FoliaLocation location = frame.getLocation().add(0, 1, 0);
-            frame.getWorld().dropItem(location, item);
-            frame.setVelocity(0, 0, 0);
+        if(f.getItem().getType() != Material.AIR && 0 + (int) (Math.random() * ((100 - 0) + 1)) <= getConfig().getInt("probability", 100)) {
+            f.getWorld().dropItemNaturally(f.getLocation().add(0, 1, 0), f.getItem());
+            f.getVelocity().zero();
         }
     }
 }
-
 
