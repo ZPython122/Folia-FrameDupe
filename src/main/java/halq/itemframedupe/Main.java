@@ -1,32 +1,31 @@
 package halq.itemframedupe;
 
-import org.bukkit.Material;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.plugin.java.JavaPlugin;
+import com.github.folia.api.FoliaPlayer;
+import com.github.folia.api.entity.FoliaItemFrame;
+import com.github.folia.api.item.FoliaItemStack;
+import com.github.folia.api.plugin.FoliaPlugin;
+import com.github.folia.api.world.FoliaLocation;
 
-/**
- * @author halq
- * @apiNote speed run S2
- * @since 28/08/2022
- */
+public class Main extends FoliaPlugin implements FoliaListener {
 
-public final class Main extends JavaPlugin implements Listener {
+    private int probability;
+
     @Override
     public void onEnable() {
-        saveDefaultConfig();
-        getServer().getPluginManager().registerEvents(this, this);
+        this.probability = getConfig().getInt("probability", 100);
+        registerListener(this);
     }
 
-    @EventHandler
-    public void onFrame(EntityDamageByEntityEvent event) {
-        ItemFrame f = (ItemFrame) event.getEntity();
-
-        if(f.getItem().getType() != Material.AIR && 0 + (int) (Math.random() * ((100 - 0) + 1)) <= getConfig().getInt("probability", 100)) {
-            f.getWorld().dropItemNaturally(f.getLocation().add(0, 1, 0), f.getItem());
-            f.getVelocity().zero();
+    @Override
+    public void onFrameDamage(FoliaItemFrame frame, FoliaPlayer damager, float damage) {
+        if (!frame.isEmpty() && Math.random() * 100 <= probability) {
+            FoliaItemStack item = frame.getItem();
+            FoliaLocation location = frame.getLocation().add(0, 1, 0);
+            frame.getWorld().dropItem(location, item);
+            frame.setVelocity(0, 0, 0); // Zero out velocity
         }
     }
 }
+
+
+
