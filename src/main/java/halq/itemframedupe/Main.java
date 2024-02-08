@@ -1,3 +1,5 @@
+package halq.itemframedupe;
+
 import org.bukkit.Material;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;
